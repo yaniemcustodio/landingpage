@@ -14,7 +14,12 @@
     --surface: #3b1a6b;
     --muted: rgba(255,255,255,0.5);
     --text: #f5e6ff;
+    --nav-bg: rgba(26, 10, 46, 0.55);
+    --nav-hover: rgba(26, 10, 46, 0.82);
+    --card-bg: rgba(59, 26, 107, 0.22);
+    --card-border: rgba(192, 132, 252, 0.14);
   }
+
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -23,21 +28,31 @@
     font-family: 'DM Sans', sans-serif;
     background: var(--deep);
     color: var(--text);
+    transition: background 0.4s, color 0.4s;
     overflow-x: hidden;
-    cursor: none;
+  }
+  @media (pointer: fine) {
+    body { cursor: none; }
+    a, button { cursor: none; }
   }
 
-  /* Custom cursor */
+  /* Custom cursor — desktop only */
   .cursor {
     position: fixed; width: 12px; height: 12px;
     background: var(--rose); border-radius: 50%;
     pointer-events: none; z-index: 9999;
     transition: transform 0.15s ease; mix-blend-mode: screen;
+    display: none;
   }
   .cursor-ring {
     position: fixed; width: 36px; height: 36px;
     border: 1.5px solid var(--lavender); border-radius: 50%;
     pointer-events: none; z-index: 9998;
+    display: none;
+  }
+  @media (pointer: fine) {
+    .cursor { display: block; }
+    .cursor-ring { display: block; }
   }
 
   /* Noise */
@@ -68,12 +83,12 @@
     padding: 1.4rem 4rem; display: flex;
     justify-content: space-between; align-items: center;
     backdrop-filter: blur(24px);
-    background: rgba(26, 10, 46, 0.55);
+    background: var(--nav-bg);
     border-bottom: 1px solid rgba(192, 132, 252, 0.1);
     transition: background 0.4s, box-shadow 0.4s;
   }
   nav:hover {
-    background: rgba(26, 10, 46, 0.82);
+    background: var(--nav-hover);
     box-shadow: 0 4px 40px rgba(124, 58, 237, 0.18);
   }
 
@@ -399,7 +414,7 @@
 
   .exp-card {
     border: 1px solid rgba(192, 132, 252, 0.14); border-radius: 22px; padding: 2.4rem;
-    background: rgba(59, 26, 107, 0.22); backdrop-filter: blur(14px);
+    background: var(--card-bg); backdrop-filter: blur(14px);
     transition: all 0.4s; position: relative; overflow: hidden;
   }
   .exp-card::before {
@@ -427,6 +442,12 @@
     border: 1px solid rgba(192, 132, 252, 0.25);
     border-radius: 100px; padding: 0.25rem 0.85rem;
     background: rgba(192, 132, 252, 0.07);
+  }
+  .exp-date-badge {
+    display: inline-block;
+    font-size: 0.68rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.9rem;
   }
   .exp-role {
     font-family: 'Cormorant Garamond', serif;
@@ -483,9 +504,9 @@
     align-items: stretch;
   }
   .why-card {
-    border: 1px solid rgba(192, 132, 252, 0.14);
+    border: 1px solid var(--card-border);
     border-radius: 20px; padding: 2rem;
-    background: rgba(59, 26, 107, 0.22);
+    background: var(--card-bg);
     backdrop-filter: blur(14px);
     transition: all 0.4s; position: relative; overflow: hidden;
   }
@@ -855,6 +876,68 @@
     .va-stats { flex-direction: column; gap: 0.8rem; }
     .edu-block { flex-direction: column; gap: 0.8rem; align-items: flex-start; }
   }
+
+
+
+  /* ── Hamburger Menu ── */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px; height: 36px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px;
+    z-index: 200;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--lavender); border-radius: 2px;
+    transition: transform 0.35s ease, opacity 0.25s ease, width 0.3s ease;
+    transform-origin: center;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 5rem 2rem 2.5rem;
+    background: rgba(26, 10, 46, 0.97);
+    backdrop-filter: blur(30px);
+    border-bottom: 1px solid rgba(192, 132, 252, 0.15);
+    z-index: 150;
+    flex-direction: column;
+    gap: 0.4rem;
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+  }
+  .mobile-nav.open {
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+  }
+  .mobile-nav a {
+    text-decoration: none; color: var(--muted);
+    font-size: 0.85rem; letter-spacing: 0.14em;
+    text-transform: uppercase; padding: 0.9rem 1rem;
+    border-radius: 12px; display: block;
+    border: 1px solid transparent;
+    transition: all 0.25s;
+  }
+  .mobile-nav a:hover, .mobile-nav a.active {
+    color: var(--text);
+    background: rgba(192, 132, 252, 0.08);
+    border-color: rgba(192, 132, 252, 0.15);
+  }
+
+  @media (max-width: 820px) {
+    .hamburger { display: flex; }
+  }
+
 </style>
 </head>
 <body>
@@ -875,7 +958,19 @@
     <li><a href="#why">Why Me</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#about" onclick="closeMobileNav()">About</a>
+  <a href="#skills" onclick="closeMobileNav()">Skills</a>
+  <a href="#experience" onclick="closeMobileNav()">Experience</a>
+  <a href="#why" onclick="closeMobileNav()">Why Me</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
 
 <!-- ═══ HERO ═══ -->
 <section class="hero" id="about">
@@ -904,7 +999,7 @@
       </div>
       <div class="social-icons">
         <!-- Facebook -->
-        <a href="#" class="social-link fb" aria-label="Facebook">
+        <a href="https://www.facebook.com/laizah.custodio" class="social-link fb" aria-label="Facebook" target="_blank">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.313 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.269h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
           </svg>
@@ -916,7 +1011,7 @@
           </svg>
         </a>
         <!-- Instagram -->
-        <a href="#" class="social-link ig" aria-label="Instagram">
+        <a href="https://www.instagram.com/yn.cstd" class="social-link ig" aria-label="Instagram" target="_blank">
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
           </svg>
@@ -977,28 +1072,13 @@
 
   <div class="exp-grid">
 
-    <!-- Card 1: Amazon / Sutherland -->
-    <div class="exp-card reveal">
-      <div class="exp-header">
-        <span class="exp-company-badge">Sutherland · Amazon</span>
-        <span class="exp-type-badge">Full-Time</span>
-      </div>
-      <div class="exp-role">Customer Service Representative<br><small style="font-size:0.75em;opacity:0.7;">Billing, Dispatch & Back Office</small></div>
-      <ul class="exp-duties">
-        <li>Handled customer inquiries via phone, email, and chat regarding billing, orders, and appliance services</li>
-        <li>Processed refunds, returns, and replacements per Amazon's policies</li>
-        <li>Coordinated technician dispatch and monitored service schedules</li>
-        <li>Updated order records and customer accounts with accuracy</li>
-        <li>Performed back-office tasks: data entry, reporting, file management</li>
-      </ul>
-    </div>
-
-    <!-- Card 2: Apple / Teleperformance -->
+    <!-- Card 1: Apple / Teleperformance -->
     <div class="exp-card reveal">
       <div class="exp-header">
         <span class="exp-company-badge">Teleperformance · Apple</span>
         <span class="exp-type-badge">Full-Time</span>
       </div>
+      <div class="exp-date-badge">August 2022 – Present</div>
       <div class="exp-role">Senior Customer Service Representative<br><small style="font-size:0.75em;opacity:0.7;">Apple Devices Support</small></div>
       <ul class="exp-duties">
         <li>Managed advanced billing, technical support, and account activation for Apple services</li>
@@ -1009,20 +1089,43 @@
       </ul>
     </div>
 
-    <!-- Card 3: Virtual Assistant — full width -->
-    <div class="exp-card exp-card-va reveal">
+    <!-- Card 2: Virtual Assistant -->
+    <div class="exp-card reveal">
       <div class="exp-header">
         <span class="exp-company-badge">Freelance · Remote</span>
         <span class="exp-type-badge">Virtual Assistant</span>
       </div>
-      <div class="exp-role" style="margin-bottom:1.8rem;">Virtual Assistant Professional<br><small style="font-size:0.75em;opacity:0.7;">Administrative & Operational Support</small></div>
+      <div class="exp-date-badge">May 2025 – January 2026</div>
+      <div class="exp-role">Virtual Assistant Professional<br><small style="font-size:0.75em;opacity:0.7;">Administrative & Operational Support</small></div>
       <ul class="exp-duties">
-        <li><strong style="color:var(--text);font-weight:400;">Calendar & Schedule Management</strong> — Organize appointments, set reminders, and coordinate meetings across time zones so your day runs without friction.</li>
-        <li><strong style="color:var(--text);font-weight:400;">Email & Communication Handling</strong> — Manage inboxes, draft professional responses, filter priorities, and ensure no client message goes unanswered.</li>
-        <li><strong style="color:var(--text);font-weight:400;">Data Entry & Report Generation</strong> — Accurately process and organize data, maintain records, and produce clean reports for better business decisions.</li>
-        <li><strong style="color:var(--text);font-weight:400;">Customer Support & Follow-Ups</strong> — Handle inquiries with empathy and professionalism, and follow up to ensure complete client satisfaction.</li>
-        <li><strong style="color:var(--text);font-weight:400;">Administrative & Back Office Tasks</strong> — File management, document preparation, order tracking, and general coordination handled seamlessly from day one.</li>
+        <li><strong style="color:var(--text);font-weight:400;">Calendar & Schedule Management</strong> — Organize appointments, set reminders, and coordinate meetings across time zones.</li>
+        <li><strong style="color:var(--text);font-weight:400;">Email & Communication Handling</strong> — Manage inboxes, draft professional responses, and ensure no client message goes unanswered.</li>
+        <li><strong style="color:var(--text);font-weight:400;">Data Entry & Report Generation</strong> — Process and organize data, maintain records, and produce clean reports.</li>
+        <li><strong style="color:var(--text);font-weight:400;">Customer Support & Follow-Ups</strong> — Handle inquiries with empathy and follow up to ensure complete client satisfaction.</li>
+        <li><strong style="color:var(--text);font-weight:400;">Administrative & Back Office Tasks</strong> — File management, document preparation, and general coordination.</li>
       </ul>
+    </div>
+
+    <!-- Card 3: Sutherland / Amazon — full width -->
+    <div class="exp-card exp-card-va reveal">
+      <div class="exp-header">
+        <span class="exp-company-badge">Sutherland · Amazon</span>
+        <span class="exp-type-badge">Full-Time</span>
+      </div>
+      <div class="exp-date-badge">October 2019 – February 2022</div>
+      <div class="exp-role" style="margin-bottom:1.8rem;">Customer Service Representative<br><small style="font-size:0.75em;opacity:0.7;">Billing, Dispatch & Back Office</small></div>
+      <div class="va-inner">
+        <ul class="exp-duties">
+          <li>Handled customer inquiries via phone, email, and chat regarding billing, orders, and appliance services</li>
+          <li>Processed refunds, returns, and replacements per Amazon's policies</li>
+          <li>Coordinated technician dispatch and monitored service schedules</li>
+        </ul>
+        <ul class="exp-duties">
+          <li>Updated order records and customer accounts with accuracy</li>
+          <li>Performed back-office tasks: data entry, reporting, file management</li>
+          <li>Consistently met or exceeded performance KPIs in a high-volume environment</li>
+        </ul>
+      </div>
     </div>
 
   </div>
@@ -1162,28 +1265,31 @@
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // ── Custom cursor ──
+  // ── Custom cursor (desktop/mouse only) ──
   const cursor = document.getElementById('cursor');
   const ring   = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
 
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 6 + 'px';
-    cursor.style.top  = my - 6 + 'px';
-  });
+  if (window.matchMedia('(pointer: fine)').matches) {
+    let mx = 0, my = 0, rx = 0, ry = 0;
 
-  (function animRing() {
-    rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
-    ring.style.left = rx - 18 + 'px';
-    ring.style.top  = ry - 18 + 'px';
-    requestAnimationFrame(animRing);
-  })();
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 6 + 'px';
+      cursor.style.top  = my - 6 + 'px';
+    });
 
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(2.2)');
-    el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
-  });
+    (function animRing() {
+      rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
+      ring.style.left = rx - 18 + 'px';
+      ring.style.top  = ry - 18 + 'px';
+      requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(2.2)');
+      el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
+  }
 
   // ── Typing effect ──
   const roles    = ['Customer Service Specialist.', 'Technical Support Expert.', 'Virtual Assistant Professional.'];
@@ -1244,6 +1350,28 @@
     });
   }, { threshold: 0.6 });
   sections.forEach(s => activeObserver.observe(s));
+
+  // ── Hamburger Menu ──
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileNav.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+
+  function closeMobileNav() {
+    mobileNav.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!hamburger.contains(e.target) && !mobileNav.contains(e.target)) {
+      closeMobileNav();
+    }
+  });
 
 </script>
 </body>
